@@ -1,0 +1,24 @@
+﻿@model SelectorViewModel
+
+<select id="ddlCompany" class="form-control select2bs4">
+    @if (string.IsNullOrWhiteSpace(Model.SelectedValue))
+    {
+        <option value="" selected>-- Select Company --</option>
+    }
+    else
+    {
+        <option value="">-- Select Company --</option>
+    }
+
+    @foreach (SelectListItem item in Model.Data.OrderBy(m => m.Text))
+    {
+        if (item.Value == Model.SelectedValue)
+        {
+            <option value="@(item.Value)" selected>@(item.Text)</option>
+        }
+        else
+        {
+            <option value="@(item.Value)">@(item.Text)</option>
+        }
+    }
+</select>

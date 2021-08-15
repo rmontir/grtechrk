@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "GrTech RK Task #1";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">&nbsp;</div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="text-center">
+                    <h1 class="display-4">Welcome</h1>
+                    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+                    {
+                        <p class="font-weight-bold text-warning">User does not have access to menu Company and Employee!</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->

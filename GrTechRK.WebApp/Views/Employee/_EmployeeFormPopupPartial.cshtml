@@ -1,0 +1,60 @@
+﻿@model EmployeeFormViewModel
+@{
+    string action = Model is null ? "Add" : "Edit";
+}
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">@action Employee</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input id="txtFirstName" type="text" class="form-control" placeholder="First Name" value="@(Model?.FirstName)" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input id="txtLastName" type="text" class="form-control" placeholder="Last Name" value="@(Model?.LastName)" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Company</label>
+                        <vc:company-selector selected="@(Model?.CompanyId)"></vc:company-selector>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input id="txtEmail" type="email" class="form-control" placeholder="Email" value="@(Model?.Email)" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input id="txtPhone" type="tel" class="form-control" placeholder="Phone" value="@(Model?.Phone)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="btnClose" class="btn btn-default" data-dismiss="modal">Close</button>
+            @if (action == "Add")
+            {
+                <button type="button" id="btnAction" class="btn btn-primary" onclick="addData()">@action</button>
+            }
+            else
+            {
+                <button type="button" id="btnAction" class="btn btn-primary" onclick="editData(@Model.Id)">@action</button>
+            }
+        </div>
+    </div>
+</div>

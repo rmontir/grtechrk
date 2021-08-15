@@ -1,0 +1,65 @@
+﻿@model LoginViewModel
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+
+    ViewData["Title"] = "Sign In";
+
+    ImmutableHashSet<string> errors = ViewData.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToImmutableHashSet();
+}
+
+<div class="login-box">
+    <div class="login-logo">
+        <a href="@Url.Action("Index", "Home")"><strong>GrTech</strong> RK</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form id="formLogin" asp-controller="Login" asp-action="Index" asp-route-returnurl="@Context.Request.Query["ReturnUrl"]" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" asp-for="Email" placeholder="Email">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button id="btnLogin" type="submit" class="btn btn-primary btn-sm btn-block">Sign In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#formLogin').submit(function() {
+                $('#btnLogin').prop('disabled', true);
+                $('#btnLogin').html('<span class="fas fa-spinner animate"></span> Validating...');
+                return true;
+            });
+        });
+
+        @if (errors.Count > 0)
+        {
+            <text>
+                @Html.Raw($"swalError(`{string.Join("<br />", errors)}`);")
+            </text>
+        }
+    </script>
+}

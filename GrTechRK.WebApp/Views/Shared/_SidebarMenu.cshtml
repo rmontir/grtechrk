@@ -1,0 +1,27 @@
+﻿<!-- Sidebar Menu -->
+<nav class="mt-2 pb-4">
+    <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" style="margin-bottom: 4rem;" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+            <a href="@Url.Action("Index", "Home")" class="nav-link @Html.IsActive("Index", "Home")">
+                <i class="fas fa-home nav-icon"></i>
+                <p>Home</p>
+            </a>
+        </li>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a href='@Url.Action("Index", "Company")' class="nav-link @Html.IsActive("Index", "Company")">
+                    <i class="fas fa-building nav-icon"></i>
+                    <p>Company</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href='@Url.Action("Index", "Employee")' class="nav-link @Html.IsActive("Index", "Employee")">
+                    <i class="fas fa-users nav-icon"></i>
+                    <p>Employee</p>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+<!-- /.sidebar-menu -->

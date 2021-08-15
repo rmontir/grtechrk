@@ -1,0 +1,272 @@
+﻿@{
+    ViewData["Title"] = "Employee";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Employee</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <button type="button" class="btn btn-success btn-sm with-icon" onclick="openAddForm()">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span>Add</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div id="content-container" class="container-fluid">
+        <div class="d-flex flex-column">
+            <div id="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-data" id="table-employee">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">Index</th>
+                                <th>Full name</th>
+                                <th>Company Id</th>
+                                <th>Company</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <th style="width: 12%;text-align: center;">Action</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+<div id="form-modal" class="modal fade" role="dialog">
+    <partial name="_EmployeeFormPopupPartial" />
+</div>
+<div id="company-modal" class="modal fade" role="dialog">
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        let listController = "@Url.Action("List", "Employee")";
+        let formController = "@Url.Action("Form", "Employee")";
+        let addController = "@Url.Action("Add", "Employee")";
+        let updateController = "@Url.Action("Update", "Employee")";
+        let deleteController = "@Url.Action("Delete", "Employee")";
+        let popupController = "@Url.Action("Detail", "Company")";
+
+        var table;
+        var dataEmployee;
+
+        $(function () {
+            bindDataTable();
+        });
+
+        let bindDataTable = () => {
+            table = $('.table-data').DataTable(
+                {
+                    "order": [[1, "asc"]],
+                    "destroy":true,
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": true,
+                    "orderMulti": false,
+                    "pageLength": 10,
+                    "ajax":
+                    {
+                        url: listController,
+                        type: "GET",
+                        dataSrc: function (v) {
+                            dataEmployee = v.data;
+                            return v.data;
+                        }
+                    },
+                    "columns": [
+                        { "data": "id", "name": "id", "autoWidth": true, "searchable": true, "orderable": false },
+                        { "data": "fullName", "name": "fullName", "autoWidth": true, "searchable": true },
+                        { "data": "companyId", "name": "companyId", "autoWidth": true, "searchable": true, "orderable": false },
+                        { "data": "companyName", "name": "companyName", "autoWidth": true, "searchable": true },
+                        { "data": "email", "name": "email", "autoWidth": true, "searchable": true },
+                        { "data": "phone", "name": "phone", "autoWidth": true, "searchable": true },
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <text>
+                                {
+                                    "render": function (data, type, full, meta) {
+                                        return `<div class="d-flex flex-row justify-content-center">
+                                                    <button onclick="openEditForm('${full.id}')" data-edit="${full.id}" class="btn bg-white text-primary border" data-toggle="tooltip" data-placement="top" title="Edit"><i class ="fas fa-edit"></i></button>
+                                                    <button onclick="confirmDeleteData('${full.id}')" data-delete="${full.id}" class="btn bg-white text-danger border" data-toggle="tooltip" data-placement="top" title="Delete"><i class ="fas fa-trash"></i></button>
+                                                </div>  `;
+                                    },
+                                    "orderable": false
+                                }
+                            </text>
+                        }
+                    ],
+                    "columnDefs": [
+                        {
+                            "targets": [0],
+                            "render": function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        {
+                            "targets": [2],
+                            "visible": false
+                        },
+                        {
+                            "targets": [3],
+                            "render": function (data, type, row, meta) {
+                                if (row.companyName == null) {
+                                    return '';
+                                } else {
+                                    return `<button type='button' class='btn btn-link p-0' onclick='openCompany(${row.companyId})'>
+                                            ${row.companyName}
+                                        </button>`;
+                                }
+                            }
+                        }
+                    ]
+                }
+            );
+        }
+
+        let refreshList = () => {
+            table.ajax.reload();
+        }
+
+        let refreshForm = (id) => {
+            $.get(formController, { id: id })
+                .done(function (data) {
+                    setHtml('#form-modal', data);
+                    openForm();
+                    $('.select2bs4').select2({
+                        theme: 'bootstrap4'
+                    })
+                });
+        }
+
+        function openAddForm() {
+            refreshForm(null);
+        }
+
+        function openEditForm(id) {
+            refreshForm(id);
+        }
+
+        function openForm() {
+            openStaticModal('#form-modal');
+        }
+
+        function closeForm() {
+            closeModal('#form-modal');
+        }
+
+        function openCompany(id) {
+            $.get(popupController, { id: id })
+                .done(function (data) {
+                    setHtml('#company-modal', data);
+                    openStaticModal('#company-modal');
+                });
+        }
+
+        function disableButtons() {
+            disableElement('#btnAction');
+            disableElement('#btnClose');
+            setHtml('#btnAction', '<span class="fas fa-spinner animate"></span> Processing...');
+        }
+
+        function enableButtons(action) {
+            enableElement('#btnAction');
+            enableElement('#btnClose');
+            setHtml('#btnAction', action);
+        }
+
+        function addData() {
+            var firstName = getValue('#txtFirstName');
+            var lastName = getValue('#txtLastName');
+            var companyId = getValue('#ddlCompany');
+            var email = getValue('#txtEmail');
+            var phone = getValue('#txtPhone');
+            disableButtons();
+
+            $.ajax({
+                method: "post",
+                url: addController,
+                data: { id: null, firstName: firstName, lastName: lastName, companyId: companyId, email: email, phone: phone }
+            })
+                .done(function (response) {
+                    refreshList();
+                    swalSuccess("Add employee has been successful");
+                    closeForm();
+                    enableButtons('Add');
+                })
+                .fail(function (err) {
+                    console.log(err);
+                    swalError(generateErrorMessageWithoutNumber(err.responseJSON.errorMessages));
+                    enableButtons('Add');
+                });
+        }
+
+        function editData(id) {
+            var firstName = getValue('#txtFirstName');
+            var lastName = getValue('#txtLastName');
+            var companyId = getValue('#ddlCompany');
+            var email = getValue('#txtEmail');
+            var phone = getValue('#txtPhone');
+            disableButtons();
+
+            $.ajax({
+                method: "put",
+                url: updateController,
+                data: { id: id, firstName: firstName, lastName: lastName, companyId: companyId, email: email, phone: phone }
+            })
+                .done(function (data) {
+                    refreshList();
+                    swalSuccess("Update employee has been successful");
+                    closeForm();
+                    enableButtons('Edit');
+                })
+                .fail(function (err) {
+                    swalError(generateErrorMessageWithoutNumber(err.responseJSON.errorMessages));
+                    enableButtons('Edit');
+                });
+        }
+
+        async function confirmDeleteData(id) {
+            let confirmBox = await swalConfirmAsync("Do you want to delete this employee?");
+
+            if (confirmBox.value) {
+                deleteData(id);
+            }
+        }
+
+        function deleteData(id) {
+            $.ajax({
+                method: "delete",
+                url: deleteController,
+                data: { id: id }
+            })
+                .done(function (data) {
+                    refreshList();
+                    swalSuccess("Delete document has been successful");
+                })
+                .fail(function (err) {
+                    swalError(generateErrorMessageWithoutNumber(err.responseJSON.errorMessages));
+                });
+        }
+    </script>
+}

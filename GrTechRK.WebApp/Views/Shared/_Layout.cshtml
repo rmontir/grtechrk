@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - GrTechRK</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/img/icon.png" type="image/png" />
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="~/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+    <!-- Datatable -->
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="~/plugins/fullcalendar/main.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/plugins/toastr/toastr.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="~/css/site.min.css" />
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed text-sm">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-primary navbar-dark">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item" style="padding-top: 6px;">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                @*<li class="nav-item d-none d-sm-inline-block">
+                        <img src="~/img/logo_ptkpi_sm.png" class="img-fluid" style="max-height: 45px;" />
+                    </li>*@
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-link nav-link">
+                            <i class="fas fa-user"></i>
+                            @User.Identity.Name
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-link nav-link" onclick='signOut()'>
+                            <i class="fas fa-lock with-text"></i>
+                            Sign Out
+                        </button>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href='@Url.Action("Login", "Home")'>
+                            <i class="fas fa-sign-in with-text"></i>
+                            Sign In
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <div class="bg-white text-center">
+                <img src="~/img/icon.png" class="img-fluid" />
+            </div>
+
+            <!-- Brand Logo -->
+            <a href='@Url.Action("Index", "Home")' class="brand-link text-center">
+                <span class="brand-text font-weight-light text-lg"><strong>GrTech</strong> RK</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <partial name="_SidebarMenu.cshtml" />
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <partial name="_Footer.cshtml" />
+        </footer>
+    </div>
+
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ChartJS -->
+    <script src="~/plugins/chart.js/Chart.min.js"></script>
+
+    <!-- Sparkline -->
+    <script src="~/plugins/sparklines/sparkline.js"></script>
+
+    <!-- JQVMap -->
+    <script src="~/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+
+    <!-- jQuery Knob Chart -->
+    <script src="~/plugins/jquery-knob/jquery.knob.min.js"></script>
+
+    <!-- daterangepicker -->
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+
+    <!-- Summernote -->
+    <script src="~/plugins/summernote/summernote-bs4.min.js"></script>
+
+    <!-- Datatable -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- Toastr -->
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+
+    <!-- fullCalendar 2.2.5 -->
+    <script src="~/plugins/moment/moment.min.js"></script>
+    <script src="~/plugins/fullcalendar/main.min.js"></script>
+
+    <!-- Bs Custom File Input -->
+    <script src="~/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+    <!-- Axios -->
+    <script src="~/plugins/axios/js/axios.min.js"></script>
+
+    <!-- Custom Script -->
+    <script src="~/js/showMessage.js"></script>
+    <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        let controller = '@Url.Action("Logout", "Home")';
+
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
+
+        function signOut() {
+            $.post(controller)
+                .done(function (response) {
+                    window.location.href = response;
+                });
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
