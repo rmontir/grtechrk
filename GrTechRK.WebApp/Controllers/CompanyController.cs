@@ -3,7 +3,6 @@ using GrTechRK.Database.Models;
 using GrTechRK.DTO;
 using GrTechRK.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -75,19 +74,21 @@ namespace GrTechRK.WebApp.Controllers
             try
             {
                 int pageSize = length ?? 10;
-                int skip = start.HasValue ? start.Value / (length ?? 10) : 0;
+                int skip = start ?? length ?? 10;
                 int recordsTotal = 0;
+                int recordsFiltered = 0;
                 string sortColumn = Request.Query["columns[" + Request.Query["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
 
                 IEnumerable<CompanyDto> companies = await _companyService.GetAllCompaniesAsync(cancellationToken).ConfigureAwait(false);
 
+                recordsTotal = companies.Count();
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     companies = companies.Where(e => e.Name.Contains(search) || e.Email.Contains(search) ||
                         e.Website.Contains(search));
                 }
 
-                recordsTotal = companies.Count();
+                recordsFiltered = companies.Count();
                 if (!string.IsNullOrWhiteSpace(sortColumn) && !string.IsNullOrWhiteSpace(sortDir))
                 {
                     string sort = $"{sortColumn} {sortDir}";
@@ -103,7 +104,7 @@ namespace GrTechRK.WebApp.Controllers
                     };
                 }
 
-                return Json(new { data = companies });
+                return Json(new { draw, recordsTotal, recordsFiltered, data = companies });
             }
             catch (Exception)
             {
@@ -116,24 +117,29 @@ namespace GrTechRK.WebApp.Controllers
         {
             try
             {
-                if (!Uri.IsWellFormedUriString(model.Website, UriKind.Absolute)) throw new ArgumentException("Invalid website link");
-
-                using MemoryStream ms = new MemoryStream();
-                if (model.Logo != null)
+                if (ModelState.IsValid)
                 {
-                    model.Logo.CopyTo(ms);
+                    using MemoryStream ms = new MemoryStream();
+                    if (model.Logo != null)
+                    {
+                        model.Logo.CopyTo(ms);
+                    }
+
+                    Company company = new Company()
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Email = model.Email,
+                        Logo = model.Logo != null ? ms.ToArray() : null,
+                        Website = !string.IsNullOrWhiteSpace(model.Website) ? new Uri(model.Website, UriKind.Absolute) : null
+                    };
+
+                    return Response_Ok(await _companyService.AddAsync(company).ConfigureAwait(false));
                 }
-
-                Company company = new Company()
+                else
                 {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Email = model.Email,
-                    Logo = model.Logo != null ? ms.ToArray() : null,
-                    Website = !string.IsNullOrWhiteSpace(model.Website) ? new Uri(model.Website, UriKind.Absolute) : null
-                };
-
-                return Response_Ok(await _companyService.AddAsync(company).ConfigureAwait(false));
+                    return Response_Exception(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                }
             }
             catch (Exception exc)
             {
@@ -146,18 +152,23 @@ namespace GrTechRK.WebApp.Controllers
         {
             try
             {
-                if (!Uri.IsWellFormedUriString(model.Website, UriKind.Absolute)) throw new ArgumentException("Invalid website link");
-
-                Company company = new Company()
+                if (ModelState.IsValid)
                 {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Email = model.Email,
-                    Logo = null,
-                    Website = !string.IsNullOrWhiteSpace(model.Website) ? new Uri(model.Website, UriKind.Absolute) : null
-                };
+                    Company company = new Company()
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Email = model.Email,
+                        Logo = null,
+                        Website = !string.IsNullOrWhiteSpace(model.Website) ? new Uri(model.Website, UriKind.Absolute) : null
+                    };
 
-                return Response_Ok(await _companyService.UpdateAsync(company).ConfigureAwait(false));
+                    return Response_Ok(await _companyService.UpdateAsync(company).ConfigureAwait(false));
+                }
+                else
+                {
+                    return Response_Exception(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                }
             }
             catch (Exception exc)
             {

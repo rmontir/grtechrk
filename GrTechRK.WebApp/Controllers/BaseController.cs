@@ -34,6 +34,12 @@ namespace GrTechRK.WebApp.Controllers
 			return ToDtoResponse<TResult>(exc);
 		}
 
+		protected DtoResponse Response_Exception(IEnumerable<string> errors)
+		{
+			Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+			return new DtoResponse<object>(default!, errors);
+		}
+
 		protected DtoResponse<TResult> Response_Exception<TResult>(IEnumerable<string> errors)
 		{
 			Response.StatusCode = (int)HttpStatusCode.InternalServerError;

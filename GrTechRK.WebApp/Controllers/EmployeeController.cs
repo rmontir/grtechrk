@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,19 +67,21 @@ namespace GrTechRK.WebApp.Controllers
             try
             {
                 int pageSize = length ?? 10;
-                int skip = start.HasValue ? start.Value / (length ?? 10) : 0;
+                int skip = start ?? length ?? 10;
                 int recordsTotal = 0;
+                int recordsFiltered = 0;
                 string sortColumn = Request.Query["columns[" + Request.Query["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
 
                 IEnumerable<EmployeeDto> employees = await _employeeService.GetAllEmployeesAsync(cancellationToken).ConfigureAwait(false);
-                
+
+                recordsTotal = employees.Count();
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     employees = employees.Where(e => e.FirstName.Contains(search) || e.LastName.Contains(search) ||
                         e.CompanyName.Contains(search) || e.Email.Contains(search) || e.Phone.Contains(search));
                 }
 
-                recordsTotal = employees.Count();
+                recordsFiltered = employees.Count();
                 if (!string.IsNullOrWhiteSpace(sortColumn) && !string.IsNullOrWhiteSpace(sortDir))
                 {
                     string sort = $"{sortColumn} {sortDir}";
@@ -98,7 +99,7 @@ namespace GrTechRK.WebApp.Controllers
                     };
                 }
 
-                return Json(new { data = employees });
+                return Json(new { draw, recordsTotal, recordsFiltered, data = employees });
             }
             catch (Exception)
             {
@@ -111,24 +112,24 @@ namespace GrTechRK.WebApp.Controllers
         {
             try
             {
-                string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
-                    + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
-                    + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
-
-                Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-                if (!regex.IsMatch(model.Email)) throw new ArgumentException("Invalid email format");
-
-                Employee employee = new Employee()
+                if (ModelState.IsValid)
                 {
-                    Id = model.Id,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    CompanyId = model.CompanyId,
-                    Email = model.Email,
-                    Phone = model.Phone
-                };
+                    Employee employee = new Employee()
+                    {
+                        Id = model.Id,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        CompanyId = model.CompanyId,
+                        Email = model.Email,
+                        Phone = model.Phone
+                    };
 
-                return Response_Ok(await _employeeService.AddAsync(employee).ConfigureAwait(false));
+                    return Response_Ok(await _employeeService.AddAsync(employee).ConfigureAwait(false));
+                }
+                else
+                {
+                    return Response_Exception(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                }
             }
             catch (Exception exc)
             {
@@ -141,24 +142,24 @@ namespace GrTechRK.WebApp.Controllers
         {
             try
             {
-                string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
-                    + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
-                    + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
-
-                Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
-                if (!regex.IsMatch(model.Email)) throw new ArgumentException("Invalid email format");
-
-                Employee employee = new Employee()
+                if (ModelState.IsValid)
                 {
-                    Id = model.Id,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    CompanyId = model.CompanyId,
-                    Email = model.Email,
-                    Phone = model.Phone
-                };
+                    Employee employee = new Employee()
+                    {
+                        Id = model.Id,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        CompanyId = model.CompanyId,
+                        Email = model.Email,
+                        Phone = model.Phone
+                    };
 
-                return Response_Ok(await _employeeService.UpdateAsync(employee).ConfigureAwait(false));
+                    return Response_Ok(await _employeeService.UpdateAsync(employee).ConfigureAwait(false));
+                }
+                else
+                {
+                    return Response_Exception(ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                }
             }
             catch (Exception exc)
             {

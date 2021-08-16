@@ -23,9 +23,11 @@ namespace GrTechRK.BSL
             MailAddress recipient = new MailAddress(to);
             MailAddress sender = new MailAddress("admin@grtech.com.my");
 
-            MailMessage message = new MailMessage(sender, recipient);
-            message.Subject = "New employee is registered";
-            message.Body = $"Employee {employee.FirstName} {employee.LastName} is registered with email {employee.Email}";
+            MailMessage message = new MailMessage(sender, recipient)
+            {
+                Subject = "New employee is registered",
+                Body = $"Employee {employee.FirstName} {employee.LastName} is registered with email {employee.Email}"
+            };
 
             SmtpClient client = new SmtpClient(_configuration["MailTrap:Host"], Convert.ToInt32(_configuration["MailTrap:Port"]))
             {
