@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
@@ -24,6 +25,8 @@ namespace GrTechRK.Database.Models
 
         [StringLength(250)]
         public string Phone { get; set; }
+
+        public DateTime Created { get; set; } = DateTime.Now;
 
         [AllowNull, MaybeNull]
         public virtual Company Company { get; set; }

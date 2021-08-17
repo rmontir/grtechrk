@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrTechRK.BSL", "GrTechRK.BS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrTechRK.WebApp", "GrTechRK.WebApp\GrTechRK.WebApp.csproj", "{953B10DA-E1B2-4BEC-9BAC-E01B56B75AE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrTechRK.DTO", "GrTechRK.DTO\GrTechRK.DTO.csproj", "{7359BB30-F7DF-408B-BE97-880B176D0B60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrTechRK.DTO", "GrTechRK.DTO\GrTechRK.DTO.csproj", "{7359BB30-F7DF-408B-BE97-880B176D0B60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrTechRK.External.ZenQuotes", "GrTechRK.External.ZenQuotes\GrTechRK.External.ZenQuotes.csproj", "{280356B8-6E55-46C9-890E-841FADB98F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7359BB30-F7DF-408B-BE97-880B176D0B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7359BB30-F7DF-408B-BE97-880B176D0B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7359BB30-F7DF-408B-BE97-880B176D0B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{280356B8-6E55-46C9-890E-841FADB98F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280356B8-6E55-46C9-890E-841FADB98F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{280356B8-6E55-46C9-890E-841FADB98F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{280356B8-6E55-46C9-890E-841FADB98F10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

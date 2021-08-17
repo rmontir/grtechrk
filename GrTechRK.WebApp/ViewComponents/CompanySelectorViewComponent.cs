@@ -22,10 +22,11 @@ namespace GrTechRK.WebApp.ViewComponents
             _companyService = companyService;
         }
 
-		public async Task<IViewComponentResult> InvokeAsync(string selected)
+		public async Task<IViewComponentResult> InvokeAsync(string id, string selected)
 		{
 			ImmutableHashSet<SelectListItem> items = await GetItemsAsync().ConfigureAwait(false);
 			SelectorViewModel model = new SelectorViewModel(
+				id: id,
 				selectedValue: selected,
 				data: items
 			);

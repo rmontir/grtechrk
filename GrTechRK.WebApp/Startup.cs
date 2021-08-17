@@ -1,6 +1,7 @@
 using GrTechRK.BSL.Interfaces;
 using GrTechRK.DAL.Interfaces;
 using GrTechRK.Database;
+using GrTechRK.External.ZenQuotes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -45,8 +46,19 @@ namespace GrTechRK.WebApp
                 options.LoginPath = $"/Login";
             });
 
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".GrTechRK.Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddBSLServices();
             services.AddDALServices();
+            services.AddZenquoteServices(options =>
+            {
+                options.ApiKey = Configuration["Zenquote:ApiKey"];
+            });
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -71,6 +83,7 @@ namespace GrTechRK.WebApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

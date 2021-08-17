@@ -1,2 +1,97 @@
 ﻿@{
+    ViewData["Title"] = "Daily Quotes";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Daily Quotes</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <button type="button" class="btn btn-success btn-sm with-icon" onclick="refreshList()">
+                    <i class="fas fa-sync mr-2"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div id="content-container" class="container-fluid">
+        <div class="d-flex flex-column">
+            <div id="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-data" id="table-employee">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">Index</th>
+                                <th>Quote</th>
+                                <th>Author</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+@section Scripts {
+    <script type="text/javascript">
+        let quoteController = "@Url.Action("DailyQuotes", "Quote")";
+        let refreshController = "@Url.Action("Refresh", "Quote")";
+
+        var table;
+        var dataQuotes;
+
+        $(function () {
+            bindDataTable();
+        });
+
+        let bindDataTable = () => {
+            table = $('.table-data').DataTable(
+                {
+                    "order": [[1, "asc"]],
+                    "destroy": true,
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": false,
+                    "orderMulti": false,
+                    "pageLength": 10,
+                    "ajax":
+                    {
+                        url: quoteController,
+                        type: "GET",
+                        dataSrc: function (v) {
+                            dataQuotes = v.data;
+                            return v.data;
+                        }
+                    },
+                    "columns": [
+                        {
+                            "render": function (data, type, full, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            },
+                            "orderable": false
+                        },
+                        { "data": "quote", "name": "quote", "autoWidth": true, "searchable": true },
+                        { "data": "author", "name": "author", "autoWidth": true, "searchable": true }
+                    ]
+                }
+            );
+        }
+
+        let refreshList = () => {
+            $.get(refreshController)
+                .done(function (d) {
+                    table.ajax.reload();
+                });
+        }
+    </script>
 }

@@ -1,6 +1,6 @@
 ﻿@model SelectorViewModel
 
-<select id="ddlCompany" class="form-control select2bs4">
+<select id="ddlCompany-@(Model.Id)" class="form-control select2bs4">
     @if (string.IsNullOrWhiteSpace(Model.SelectedValue))
     {
         <option value="" selected>-- Select Company --</option>

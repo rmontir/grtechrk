@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GrTechRK.Database.Models;
 using GrTechRK.DTO;
+using GrTechRK.External.ZenQuotes.Models;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -20,6 +21,8 @@ namespace GrTechRK.BSL.Common
 
             CreateMap<Employee, EmployeeDto>()
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => MapCompany(src)));
+
+            CreateMap<DailyQuote, QuoteDto>();
         }
 
         private string MapCompany(Employee employee)

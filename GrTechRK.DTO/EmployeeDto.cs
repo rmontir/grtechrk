@@ -1,4 +1,6 @@
-﻿namespace GrTechRK.DTO
+﻿using System;
+
+namespace GrTechRK.DTO
 {
     public class EmployeeDto
     {
@@ -39,6 +41,8 @@
 
         public string Phone { get; set; }
 
+        public DateTime Created { get; set; }
+
         public EmployeeDto() { }
 
         public EmployeeDto(
@@ -48,7 +52,8 @@
             int companyId,
             string companyName,
             string email,
-            string phone
+            string phone,
+            DateTime created
         )
         {
             Id = id;
@@ -58,6 +63,7 @@
             CompanyName = companyName;
             Email = email;
             Phone = phone;
+            Created = created;
         }
     }
 }

@@ -61,6 +61,12 @@ namespace GrTechRK.WebApp.Controllers
             [FromQuery(Name = "length")] int? length,
             [FromQuery(Name = "search[value]")] string search,
             [FromQuery(Name = "order[0][dir]")] string sortDir,
+            [FromQuery(Name = "s")] string startDate,
+            [FromQuery(Name = "e")] string endDate,
+            [FromQuery(Name = "fn")] string firstName,
+            [FromQuery(Name = "ln")] string lastName,
+            [FromQuery(Name = "m")] string email,
+            [FromQuery(Name = "c")] string companyId,
             CancellationToken cancellationToken
         )
         {
@@ -81,6 +87,34 @@ namespace GrTechRK.WebApp.Controllers
                         e.CompanyName.Contains(search) || e.Email.Contains(search) || e.Phone.Contains(search));
                 }
 
+                if (!string.IsNullOrWhiteSpace(startDate))
+                {
+                    DateTime sd = DateTime.Parse(startDate);
+                    employees = employees.Where(e => e.Created >= sd);
+                }
+                if (!string.IsNullOrWhiteSpace(endDate))
+                {
+                    DateTime ed = DateTime.Parse(endDate);
+                    employees = employees.Where(e => e.Created <= ed);
+                }
+                if (!string.IsNullOrWhiteSpace(firstName))
+                {
+                    employees = employees.Where(e => e.FirstName.Contains(firstName));
+                }
+                if (!string.IsNullOrWhiteSpace(lastName))
+                {
+                    employees = employees.Where(e => e.LastName.Contains(lastName));
+                }
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    employees = employees.Where(e => e.Email.Contains(email));
+                }
+                if (!string.IsNullOrWhiteSpace(companyId))
+                {
+                    int.TryParse(companyId, out int cid);
+                    employees = employees.Where(e => e.CompanyId == cid || cid == 0);
+                }
+
                 recordsFiltered = employees.Count();
                 if (!string.IsNullOrWhiteSpace(sortColumn) && !string.IsNullOrWhiteSpace(sortDir))
                 {
@@ -95,6 +129,8 @@ namespace GrTechRK.WebApp.Controllers
                         "email desc" => employees.OrderByDescending(e => e.Email).Skip(skip).Take(pageSize),
                         "phone asc" => employees.OrderBy(e => e.Phone).Skip(skip).Take(pageSize),
                         "phone desc" => employees.OrderByDescending(e => e.Phone).Skip(skip).Take(pageSize),
+                        "created asc" => employees.OrderBy(e => e.Created).Skip(skip).Take(pageSize),
+                        "created desc" => employees.OrderByDescending(e => e.Created).Skip(skip).Take(pageSize),
                         _ => employees.OrderBy(e => e.FullName).Skip(skip).Take(pageSize),
                     };
                 }
