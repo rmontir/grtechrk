@@ -9,6 +9,7 @@ namespace GrTechRK.BSL.Interfaces
         {
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IQuoteService, QuoteService>();
             services.AddSingleton<IMailService, MailService>();
             services.AddAutoMapper(typeof(MappingProfile));
         }
